@@ -53,47 +53,26 @@ func _exit_tree() -> void:
 
 # Fill popup menu and resolution data dictionary:
 func load_resolution_list() -> void:
+	# Load resolution list:
 	config_file = ConfigFile.new();
-	var is_loaded: = config_file.load(RESOLUTION_LIST_FILE_PATH);
-	
+	var is_loaded: = config_file.load(RESOLUTION_LIST_FILE_PATH);	
 	if is_loaded != OK:
 		return;
 	
 	resolution_data = {};
 	toolbar_menu_popup.clear();
-
-	stretch_mode_submenu = PopupMenu.new();
-	stretch_mode_submenu.name = "stretch_mode";
-	stretch_mode_submenu.connect("id_pressed", self, "_on_stretch_mode_submenu_id_pressed");
 	
-	stretch_mode_submenu.add_radio_check_item("disabled                     ", 0);
-	stretch_mode_submenu.add_radio_check_item("2d", 1);
-	stretch_mode_submenu.add_radio_check_item("viewport", 2);
+	# Load submenus:
+	load_stretch_mode_submenu();
+	load_stretch_aspect_submenu();
+	toolbar_menu_popup.add_separator();
 	
-	update_radio_group_check_state(stretch_mode_submenu, [1, 0, 0]);
-	
-	toolbar_menu_popup.add_child(stretch_mode_submenu);
-	toolbar_menu_popup.add_submenu_item("Stretch Mode", "stretch_mode");
-	
-	stretch_aspect_submenu = PopupMenu.new();
-	stretch_aspect_submenu.name = "stretch_aspect";
-	stretch_aspect_submenu.connect("id_pressed", self, "_on_stretch_aspect_submenu_id_pressed");
-	
-	stretch_aspect_submenu.add_radio_check_item("ignore                       ", 0);
-	stretch_aspect_submenu.add_radio_check_item("keep", 1);
-	stretch_aspect_submenu.add_radio_check_item("keep_width", 2);
-	stretch_aspect_submenu.add_radio_check_item("keep_height", 3);
-	stretch_aspect_submenu.add_radio_check_item("expand", 4);
-	
-	update_radio_group_check_state(stretch_aspect_submenu, [1, 0, 0, 0, 0]);
-	
-	toolbar_menu_popup.add_child(stretch_aspect_submenu);
-	toolbar_menu_popup.add_submenu_item("Stretch Aspect", "stretch_aspect");
-	
+	# Fill data:
 	var sections: PoolStringArray = config_file.get_sections();
 	for section in sections:
 		var keys: PoolStringArray = config_file.get_section_keys(section);
 		for key in keys:
+			# Split at "x":
 			var value = config_file.get_value(section,key).split("x");
 			var width = value[0];
 			var height = value[1];
@@ -108,17 +87,43 @@ func load_resolution_list() -> void:
 			toolbar_menu_popup.add_item(text);
 		
 		toolbar_menu_popup.add_separator();
-		
-	toolbar_menu_popup.add_item("Add Custom Size");
+
+
+# Create stretch mode submenu:
+func load_stretch_mode_submenu() -> void:
+	stretch_mode_submenu = PopupMenu.new();
+	stretch_mode_submenu.name = "stretch_mode"; # used in add_submenu_item function
+	stretch_mode_submenu.connect("id_pressed", self, "_on_stretch_mode_submenu_id_pressed");
 	
-	var submenu = PopupMenu.new();
-	submenu.name = "submenu";
-	submenu.add_item("t");
-	toolbar_menu_popup.add_child(submenu);
-	toolbar_menu_popup.add_submenu_item("label", "submenu");
+	# Group of radio buttons (disabled, 2d, viewport):
+	stretch_mode_submenu.add_radio_check_item("disabled                     ", 0);
+	stretch_mode_submenu.add_radio_check_item("2d", 1);
+	stretch_mode_submenu.add_radio_check_item("viewport", 2);
+	update_radio_group_check_state(stretch_mode_submenu, [1, 0, 0]);
+	
+	toolbar_menu_popup.add_child(stretch_mode_submenu);
+	toolbar_menu_popup.add_submenu_item("Stretch Mode", "stretch_mode");
 
 
-func update_radio_group_check_state(menu: PopupMenu, check_array: Array):
+# Create stretch aspect submenu:
+func load_stretch_aspect_submenu() -> void:
+	stretch_aspect_submenu = PopupMenu.new();
+	stretch_aspect_submenu.name = "stretch_aspect"; # used in add_submenu_item function
+	stretch_aspect_submenu.connect("id_pressed", self, "_on_stretch_aspect_submenu_id_pressed");
+	
+	# Group of radio buttons (ignore, keep, keep_width, keep_height, )expand:
+	stretch_aspect_submenu.add_radio_check_item("ignore                       ", 0);
+	stretch_aspect_submenu.add_radio_check_item("keep", 1);
+	stretch_aspect_submenu.add_radio_check_item("keep_width", 2);
+	stretch_aspect_submenu.add_radio_check_item("keep_height", 3);
+	stretch_aspect_submenu.add_radio_check_item("expand", 4);
+	update_radio_group_check_state(stretch_aspect_submenu, [1, 0, 0, 0, 0]);
+	
+	toolbar_menu_popup.add_child(stretch_aspect_submenu);
+	toolbar_menu_popup.add_submenu_item("Stretch Aspect", "stretch_aspect");
+
+
+func update_radio_group_check_state(menu: PopupMenu, check_array: Array) -> void:
 	var location: int = 0;
 	for check_item in check_array:
 		if check_item:
@@ -144,82 +149,44 @@ func _on_stretch_mode_submenu_id_pressed(id: int) -> void:
 	else:
 		return;
 
+
 func _on_stretch_aspect_submenu_id_pressed(id: int) -> void:
 	if id == 0:
 		update_radio_group_check_state(stretch_aspect_submenu, [1, 0, 0, 0, 0]);
 		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
-		print(ProjectSettings.get_setting("display/window/stretch/aspect"))
+		#print(ProjectSettings.get_setting("display/window/stretch/aspect"))
 	elif id == 1:
 		update_radio_group_check_state(stretch_aspect_submenu, [0, 1, 0, 0, 0]);
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep");
-		print(ProjectSettings.get_setting("display/window/stretch/aspect"))
 	elif id == 2:
 		update_radio_group_check_state(stretch_aspect_submenu, [0, 0, 1, 0, 0]);
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_width");
-		print(ProjectSettings.get_setting("display/window/stretch/aspect"))
 	elif id == 3:
 		update_radio_group_check_state(stretch_aspect_submenu, [0, 0, 0, 1, 0]);
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_height");
-		print(ProjectSettings.get_setting("display/window/stretch/aspect"))
 	elif id == 4:
 		update_radio_group_check_state(stretch_aspect_submenu, [0, 0, 0, 0, 1]);
 		ProjectSettings.set_setting("display/window/stretch/aspect", "expand");
-		print(ProjectSettings.get_setting("display/window/stretch/aspect"))
 	else:
 		return;
 
 
-func _on_toolbar_menu_popup_id_pressed(id):
+func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
 	var key = toolbar_menu_popup.get_item_text(id)
 	
-#	if key == "Add Custom Size":
-#		if custom_window.get_parent()==null:
-#			add_child(custom_window)
-#		custom_window.show()
-#		custom_window.popup_centered()
-#		custom_window.get_node("vbox/hbox3/addButton").connect("pressed",self,"_on_add_new",[],CONNECT_ONESHOT)
-#		custom_window.get_node("vbox/hbox4/category").clear()
-#		for section in config_file.get_sections():
-#			custom_window.get_node("vbox/hbox4/category").add_item(section)
-#	else:
 	var w = resolution_data[key]["width"]
 	var h = resolution_data[key]["height"]
-	#print(w)
-	#print(h)
+
 	toolbar_menu_btn.set_text(key)
-	#ProjectSettings.set_persisting("display/window/size/test_width",true)
-	#ProjectSettings.set_persisting("display/window/size/test_height",true)
+
 	ProjectSettings.set_setting("display/window/size/width",w)
 	ProjectSettings.set_setting("display/window/size/height",h)
 	ProjectSettings.save()
 
-#func _on_add_new():
-#	var category = custom_window.get_node("vbox/hbox4/category").get_item_text(custom_window.get_node("vbox/hbox4/category").get_selected())
-#	var label = custom_window.get_node("vbox/hbox1/labelText").get_text()
-#	var width = int(custom_window.get_node("vbox/hbox2/widthText").get_text())
-#	var height = int(custom_window.get_node("vbox/hbox2/heightText").get_text())
-#	if height==0 or width==0 or  label=="":
-#		var c = AcceptDialog.new()
-#		add_child(c)
-#		c.set_title("Error")
-#		c.set_text("Resolution not added because of incomplete\n details")
-#		c.popup_centered(Vector2(300,100))
-#		c.set_exclusive(true)
-#		c.show()
-#	else:
-#		config_file.set_value(category,label,str(width)+"x"+str(height))
-#		config_file.save(RESOLUTION_LIST_FILE_PATH)
-#		load_resolution_list()
-#	custom_window.hide()
 
-# custom_window = null;
-	#custom_window = preload("custom_res_popup.xml").instance();
-	
-	#custom_window.queue_free()
-	#custom_window = null
-func get_plugin_name(): 
+func get_plugin_name() -> String: 
 	return "ResolutionSwitcher"
 
 
-func _init():
+func _init() -> void:
 	pass
