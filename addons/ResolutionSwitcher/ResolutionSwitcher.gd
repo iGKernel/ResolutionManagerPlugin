@@ -17,6 +17,7 @@ var toolbar_menu_popup: PopupMenu  = null;
 var stretch_settings_submenu: PopupMenu = null;
 var game_res_submenu: PopupMenu = null;
 var set_res_window = null
+var custom_res_window = null
 
 
 # Initialization of the plugin:
@@ -28,6 +29,9 @@ func _enter_tree() -> void:
 	# Connect id_pressed signal to switch resloution:
 	toolbar_menu_popup = toolbar_menu_btn.get_popup();
 	toolbar_menu_popup.connect("id_pressed", self, "_on_toolbar_menu_popup_id_pressed");
+	
+	set_res_window = preload("set_res_window.tscn").instance();
+	custom_res_window = preload("custom_res_window.tscn").instance();
 	
 	# Fill popup menu and resolution data dictionary:
 	load_resolution_list();
@@ -56,7 +60,7 @@ func _exit_tree() -> void:
 
 # Fill popup menu and resolution data dictionary:
 func load_resolution_list() -> void:
-	set_res_window = preload("set_res_window.tscn").instance();
+
 	
 	# Load resolution list:
 	config_file = ConfigFile.new();
@@ -71,8 +75,10 @@ func load_resolution_list() -> void:
 	load_stretch_settings_submenu();
 	
 	toolbar_menu_popup.add_item("Set Base Resolution");
+	toolbar_menu_popup.add_item("Add Custom Resolution");
+	toolbar_menu_popup.add_separator();
 	toolbar_menu_popup.add_item("Test Resolutions:");
-	toolbar_menu_popup.set_item_disabled(2, true);
+	toolbar_menu_popup.set_item_disabled(4, true);
 	
 	var node = set_res_window.find_node("OptionButton");
 	node.connect("item_selected", self, "_on_node_item_selected");
@@ -250,6 +256,8 @@ func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
 	var key := toolbar_menu_popup.get_item_text(id);
 	if key == "Set Base Resolution":
 		set_res_logic();
+	elif key == "Add Custom Resolution":
+		custom_res_logic();
 	else:
 		var width: int = resolution_data[key]["width"];
 		var height: int = resolution_data[key]["height"];
@@ -259,6 +267,16 @@ func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
 		ProjectSettings.set_setting("display/window/size/test_width", width);
 		ProjectSettings.set_setting("display/window/size/test_height", height);
 		ProjectSettings.save();
+
+
+func custom_res_logic() -> void:
+	if custom_res_window.get_parent() == null:
+		add_child(custom_res_window);
+		
+	custom_res_window.show();
+	custom_res_window.popup_centered();
+	custom_res_window.find_node("ok").connect("pressed", self, "_on_ok2", [], CONNECT_ONESHOT);
+	custom_res_window.find_node("cancel").connect("pressed", self, "_on_cancel2", [], CONNECT_ONESHOT);
 
 
 func set_res_logic() -> void:
@@ -280,9 +298,24 @@ func _on_ok():
 	ProjectSettings.save();
 	set_res_window.hide();
 
+func _on_ok2():
+	var width: String = String(custom_res_window.find_node("width").text);
+	var height: String = String(custom_res_window.find_node("height").text);
+	var label: String = String(custom_res_window.find_node("labelv").text);
+	
+	var text : String = width + "x" + height;
+	
+	config_file.set_value("Old Resolutions", label, text);
+	config_file.save(RESOLUTION_LIST_FILE_PATH);
+	load_resolution_list();
+		
+	custom_res_window.hide();
+	
 func _on_cancel():
 	set_res_window.hide();
 
+func _on_cancel2():
+	custom_res_window.hide();
 
 func get_plugin_name() -> String: 
 	return "ResolutionSwitcher";
