@@ -1,6 +1,7 @@
 tool
 extends EditorPlugin
 
+
 # Text file contain list of pre-defined resolutions:
 const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list.txt";
 
@@ -14,6 +15,8 @@ var resolution_data: Dictionary = {};
 var toolbar_menu_btn: MenuButton = null;
 var toolbar_menu_popup: PopupMenu  = null;
 var stretch_settings_submenu: PopupMenu = null;
+var game_res_submenu: PopupMenu = null;
+var set_res_window = null
 
 
 # Initialization of the plugin:
@@ -28,9 +31,10 @@ func _enter_tree() -> void:
 	
 	# Fill popup menu and resolution data dictionary:
 	load_resolution_list();
-		
+	
 	# Add menu button to canvas editor toolbar:
 	add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, toolbar_menu_btn);
+	
 
 
 # Clean-up of the plugin:
@@ -52,6 +56,8 @@ func _exit_tree() -> void:
 
 # Fill popup menu and resolution data dictionary:
 func load_resolution_list() -> void:
+	set_res_window = preload("set_res_window.tscn").instance();
+	
 	# Load resolution list:
 	config_file = ConfigFile.new();
 	var is_loaded: = config_file.load(RESOLUTION_LIST_FILE_PATH);	
@@ -63,12 +69,22 @@ func load_resolution_list() -> void:
 	
 	# Load submenus:
 	load_stretch_settings_submenu();
-	toolbar_menu_popup.add_separator();
+	
+	toolbar_menu_popup.add_item("Set Base Resolution");
+	toolbar_menu_popup.add_item("Test Resolutions:");
+	toolbar_menu_popup.set_item_disabled(2, true);
+	
+	var node = set_res_window.find_node("OptionButton");
+	node.connect("item_selected", self, "_on_node_item_selected");
 	
 	# Fill data:
 	var sections: PoolStringArray = config_file.get_sections();
+	
 	for section in sections:
 		var keys: PoolStringArray = config_file.get_section_keys(section);
+		toolbar_menu_popup.add_separator(section);
+		node.add_separator();
+		
 		for key in keys:
 			# Split at "x":
 			var value = config_file.get_value(section,key).split("x");
@@ -83,8 +99,16 @@ func load_resolution_list() -> void:
 			};
 			
 			toolbar_menu_popup.add_item(text);
-		
-		toolbar_menu_popup.add_separator();
+			node.add_item(text);
+
+func _on_node_item_selected(id: int):
+	var key = set_res_window.find_node("OptionButton").get_item_text(id);
+	
+	var width: int = resolution_data[key]["width"];
+	var height: int = resolution_data[key]["height"];
+	
+	set_res_window.find_node("width").text = String(width);
+	set_res_window.find_node("height").text = String(height);
 
 
 # Create stretch settings submenu:
@@ -223,20 +247,45 @@ func update_radio_group_check_state(menu: PopupMenu, check_array: Array) -> void
 
 
 func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
-	var key = toolbar_menu_popup.get_item_text(id)
+	var key := toolbar_menu_popup.get_item_text(id);
+	if key == "Set Base Resolution":
+		set_res_logic();
+	else:
+		var width: int = resolution_data[key]["width"];
+		var height: int = resolution_data[key]["height"];
+		
+		toolbar_menu_btn.set_text(key);
+		
+		ProjectSettings.set_setting("display/window/size/test_width", width);
+		ProjectSettings.set_setting("display/window/size/test_height", height);
+		ProjectSettings.save();
+
+
+func set_res_logic() -> void:
+	if set_res_window.get_parent() == null:
+		add_child(set_res_window);
 	
-	var w = resolution_data[key]["width"]
-	var h = resolution_data[key]["height"]
+	set_res_window.find_node("width").text = String(ProjectSettings.get_setting("display/window/size/width"));
+	set_res_window.find_node("height").text = String(ProjectSettings.get_setting("display/window/size/height"));
+	set_res_window.show();
+	set_res_window.popup_centered();
+	set_res_window.find_node("ok").connect("pressed", self, "_on_ok", [], CONNECT_ONESHOT);
+	set_res_window.find_node("cancel").connect("pressed", self, "_on_cancel", [], CONNECT_ONESHOT);
 
-	toolbar_menu_btn.set_text(key)
+func _on_ok():
+	var width: int = int(set_res_window.find_node("width").text);
+	var height: int = int(set_res_window.find_node("height").text);
+	ProjectSettings.set_setting("display/window/size/width", width);
+	ProjectSettings.set_setting("display/window/size/height", height);
+	ProjectSettings.save();
+	set_res_window.hide();
 
-	ProjectSettings.set_setting("display/window/size/width",w)
-	ProjectSettings.set_setting("display/window/size/height",h)
-	ProjectSettings.save()
+func _on_cancel():
+	set_res_window.hide();
 
 
 func get_plugin_name() -> String: 
-	return "ResolutionSwitcher"
+	return "ResolutionSwitcher";
 
 
 func _init() -> void:
