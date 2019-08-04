@@ -193,52 +193,19 @@ func load_stretch_settings_submenu() -> void:
 
 
 func _on_stretch_settings_submenu_id_pressed(id: int) -> void:
-	if id == 0:
-		update_radio_group_check_state(stretch_settings_submenu, 0);
-		ProjectSettings.set_setting("display/window/stretch/mode", "disabled");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
-	elif id == 1:
-		update_radio_group_check_state(stretch_settings_submenu, 1);
-		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
-	elif id == 2:
-		update_radio_group_check_state(stretch_settings_submenu, 2);
-		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep");
-	elif id == 3:
-		update_radio_group_check_state(stretch_settings_submenu, 3);
-		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_width");
-	elif id == 4:
-		update_radio_group_check_state(stretch_settings_submenu, 4);
-		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_height");
-	elif id == 5:
-		update_radio_group_check_state(stretch_settings_submenu, 5);
-		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "expand");
-	elif id == 6:
-		update_radio_group_check_state(stretch_settings_submenu, 6);
-		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
-	elif id == 7:
-		update_radio_group_check_state(stretch_settings_submenu, 7);
-		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep");
-	elif id == 8:
-		update_radio_group_check_state(stretch_settings_submenu, 8);
-		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_width");
-	elif id == 9:
-		update_radio_group_check_state(stretch_settings_submenu, 9);
-		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_height");
-	elif id == 10:
-		update_radio_group_check_state(stretch_settings_submenu, 10);
-		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
-		ProjectSettings.set_setting("display/window/stretch/aspect", "expand");
-	else:
-		return;
+	var array: Array = ["ignore", "keep", "keep_width", "keep_height", "expand"];
+	var mode = "disabled";
+	var aspect = "ignore";
+	if id != 0 and id < 6:
+		mode = "2d";
+		aspect = array[id-1];
+	elif id >= 6:
+		mode = "viewport";
+		aspect = array[fmod(id-1, 5)];
+
+	update_radio_group_check_state(stretch_settings_submenu, id);
+	ProjectSettings.set_setting("display/window/stretch/mode", mode);
+	ProjectSettings.set_setting("display/window/stretch/aspect", aspect);
 
 
 func update_radio_group_check_state(menu: PopupMenu, idx: int) -> void:
