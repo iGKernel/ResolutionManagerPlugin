@@ -2,94 +2,92 @@
 
 [ext_resource path="res://addons/ResolutionSwitcher/GUI.theme" type="Theme" id=1]
 
-[node name="custom_res_window" type="PopupPanel"]
+[node name="custom_res_window" type="WindowDialog"]
 visible = true
 margin_left = 12.0
 margin_top = 34.0
 margin_right = 340.0
 margin_bottom = 233.0
 theme = ExtResource( 1 )
+window_title = "Add Custom Resolution"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 4.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_left = 2.0
+margin_top = 2.0
+margin_right = -2.0
+margin_bottom = -2.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-editor/display_folded = true
-margin_right = 320.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2"]
+margin_right = 324.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-editor/display_folded = true
-margin_right = 320.0
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HBoxContainer"]
+margin_right = 324.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-margin_right = 320.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer/VBoxContainer"]
+margin_right = 324.0
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer2/HBoxContainer/VBoxContainer"]
 margin_top = 5.0
-margin_right = 320.0
+margin_right = 324.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
-text = "Add Custom Resolution"
-align = 1
+text = "   *use for both test and base resolutions."
 valign = 1
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer2"]
 margin_top = 24.0
-margin_right = 320.0
-margin_bottom = 177.0
+margin_right = 324.0
+margin_bottom = 181.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3"]
 margin_right = 10.0
-margin_bottom = 153.0
+margin_bottom = 157.0
 rect_min_size = Vector2( 10, 0 )
 
-[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer3"]
+[node name="Panel" type="Panel" parent="VBoxContainer2/HBoxContainer3"]
 margin_left = 14.0
-margin_right = 306.0
-margin_bottom = 153.0
+margin_right = 310.0
+margin_bottom = 157.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer1" type="VBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel"]
+[node name="VBoxContainer1" type="VBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1"]
-margin_right = 292.0
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1"]
+margin_right = 296.0
 margin_bottom = 10.0
 rect_min_size = Vector2( 0, 10 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1"]
 editor/display_folded = true
 margin_top = 14.0
-margin_right = 292.0
+margin_right = 296.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 
-[node name="WLabel" type="Label" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
+[node name="WLabel" type="Label" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
 margin_top = 8.0
 margin_right = 90.0
 margin_bottom = 22.0
 text = "  Label :          "
 
-[node name="labelv" type="LineEdit" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
+[node name="labelv" type="LineEdit" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
 margin_left = 94.0
 margin_right = 292.0
 margin_bottom = 30.0
@@ -99,27 +97,27 @@ size_flags_vertical = 4
 align = 1
 context_menu_enabled = false
 placeholder_text = "Enter Label"
+caret_blink = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
-visible = false
-margin_left = 292.0
-margin_right = 292.0
-margin_bottom = 48.0
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer"]
+margin_left = 296.0
+margin_right = 296.0
+margin_bottom = 30.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1"]
 editor/display_folded = true
 margin_top = 48.0
-margin_right = 292.0
+margin_right = 296.0
 margin_bottom = 78.0
 size_flags_horizontal = 3
 
-[node name="WLabel" type="Label" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
+[node name="WLabel" type="Label" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
 margin_top = 8.0
 margin_right = 90.0
 margin_bottom = 22.0
 text = "  Width:          "
 
-[node name="width" type="LineEdit" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
+[node name="width" type="LineEdit" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
 margin_left = 94.0
 margin_right = 292.0
 margin_bottom = 30.0
@@ -129,26 +127,27 @@ size_flags_vertical = 4
 align = 1
 context_menu_enabled = false
 placeholder_text = "Enter Width"
+caret_blink = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
-visible = false
-margin_left = 292.0
-margin_right = 292.0
-margin_bottom = 48.0
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer2"]
+margin_left = 296.0
+margin_right = 296.0
+margin_bottom = 30.0
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1"]
+editor/display_folded = true
 margin_top = 82.0
-margin_right = 292.0
+margin_right = 296.0
 margin_bottom = 112.0
 size_flags_horizontal = 3
 
-[node name="HLabel" type="Label" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
+[node name="HLabel" type="Label" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
 margin_top = 8.0
 margin_right = 90.0
 margin_bottom = 22.0
 text = "  Height:         "
 
-[node name="height" type="LineEdit" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
+[node name="height" type="LineEdit" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
 margin_left = 94.0
 margin_right = 292.0
 margin_bottom = 30.0
@@ -158,44 +157,43 @@ size_flags_vertical = 4
 align = 1
 context_menu_enabled = false
 placeholder_text = "Enter Height"
+caret_blink = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
-visible = false
-margin_left = 292.0
-margin_right = 292.0
-margin_bottom = 79.0
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/HBoxContainer3"]
+margin_left = 296.0
+margin_right = 296.0
+margin_bottom = 30.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1"]
-editor/display_folded = true
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1"]
 margin_top = 116.0
-margin_right = 292.0
-margin_bottom = 153.0
+margin_right = 296.0
+margin_bottom = 157.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
-margin_right = 292.0
-margin_bottom = 6.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
+margin_right = 296.0
+margin_bottom = 8.0
 rect_min_size = Vector2( 0, 5 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
-margin_top = 10.0
-margin_right = 292.0
-margin_bottom = 26.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
+margin_top = 12.0
+margin_right = 296.0
+margin_bottom = 28.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
 margin_right = 150.0
 margin_bottom = 16.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ok" type="Button" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
+[node name="ok" type="Button" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
 margin_left = 152.0
 margin_right = 220.0
 margin_bottom = 16.0
@@ -203,7 +201,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "OK"
 
-[node name="cancel" type="Button" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
+[node name="cancel" type="Button" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
 margin_left = 222.0
 margin_right = 290.0
 margin_bottom = 16.0
@@ -211,29 +209,31 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Cancel"
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer"]
 margin_left = 292.0
-margin_right = 292.0
+margin_right = 295.0
 margin_bottom = 16.0
+rect_min_size = Vector2( 3, 0 )
+size_flags_vertical = 3
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
-margin_top = 30.0
-margin_right = 292.0
-margin_bottom = 37.0
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2"]
+margin_top = 32.0
+margin_right = 296.0
+margin_bottom = 41.0
 rect_min_size = Vector2( 0, 5 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer3"]
-margin_left = 310.0
-margin_right = 320.0
-margin_bottom = 153.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HBoxContainer3"]
+margin_left = 314.0
+margin_right = 324.0
+margin_bottom = 157.0
 rect_min_size = Vector2( 10, 0 )
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 181.0
-margin_right = 320.0
-margin_bottom = 191.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer2"]
+margin_top = 185.0
+margin_right = 324.0
+margin_bottom = 195.0
 rect_min_size = Vector2( 0, 10 )
 size_flags_horizontal = 3
 

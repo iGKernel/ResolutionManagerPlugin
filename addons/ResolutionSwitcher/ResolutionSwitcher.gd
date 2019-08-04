@@ -24,7 +24,8 @@ var custom_res_window = null
 func _enter_tree() -> void:
 	# Create new menu button:
 	toolbar_menu_btn = MenuButton.new();
-	toolbar_menu_btn.text = "Switch Resolution";
+	toolbar_menu_btn.text = "Resolution";
+	toolbar_menu_btn.icon = preload("res://addons/ResolutionSwitcher/iconfinder_desktop_3688496.png");
 	
 	# Connect id_pressed signal to switch resloution:
 	toolbar_menu_popup = toolbar_menu_btn.get_popup();
@@ -285,6 +286,8 @@ func set_res_logic() -> void:
 	
 	set_res_window.find_node("width").text = String(ProjectSettings.get_setting("display/window/size/width"));
 	set_res_window.find_node("height").text = String(ProjectSettings.get_setting("display/window/size/height"));
+	set_res_window.find_node("current").text = "    Current resolution: " + set_res_window.find_node("width").text + " x " + set_res_window.find_node("height").text;
+
 	set_res_window.show();
 	set_res_window.popup_centered();
 	set_res_window.find_node("ok").connect("pressed", self, "_on_ok", [], CONNECT_ONESHOT);
