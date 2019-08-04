@@ -39,7 +39,7 @@ func _enter_tree() -> void:
 	
 	# Add menu button to canvas editor toolbar:
 	add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, toolbar_menu_btn);
-	
+
 
 
 # Clean-up of the plugin:
@@ -186,71 +186,70 @@ func load_stretch_settings_submenu() -> void:
 	tip += "Depending on the screen aspect ratio, the viewport will either be larger in the \nhorizontal direction (if the screen is wider than the base size) or in the vertical direction\n(if the screen is taller than the original size)";
 	stretch_settings_submenu.set_item_tooltip(10, tip);
 	
-	update_radio_group_check_state(stretch_settings_submenu, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+	update_radio_group_check_state(stretch_settings_submenu, 0);
 	
 	toolbar_menu_popup.add_child(stretch_settings_submenu);
 	toolbar_menu_popup.add_submenu_item("Stretch Settings", "stretch_settings");
-	
+
 
 func _on_stretch_settings_submenu_id_pressed(id: int) -> void:
 	if id == 0:
-		update_radio_group_check_state(stretch_settings_submenu, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 0);
 		ProjectSettings.set_setting("display/window/stretch/mode", "disabled");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
 	elif id == 1:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 1);
 		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
 	elif id == 2:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 2);
 		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep");
 	elif id == 3:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 3);
 		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_width");
 	elif id == 4:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 4);
 		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_height");
 	elif id == 5:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 5);
 		ProjectSettings.set_setting("display/window/stretch/mode", "2d");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "expand");
 	elif id == 6:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 6);
 		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "ignore");
 	elif id == 7:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 7);
 		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep");
 	elif id == 8:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 8);
 		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_width");
 	elif id == 9:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]);
+		update_radio_group_check_state(stretch_settings_submenu, 9);
 		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "keep_height");
 	elif id == 10:
-		update_radio_group_check_state(stretch_settings_submenu, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
+		update_radio_group_check_state(stretch_settings_submenu, 10);
 		ProjectSettings.set_setting("display/window/stretch/mode", "viewport");
 		ProjectSettings.set_setting("display/window/stretch/aspect", "expand");
 	else:
 		return;
 
 
-func update_radio_group_check_state(menu: PopupMenu, check_array: Array) -> void:
-	var location: int = 0;
-	for check_item in check_array:
-		if check_item:
-			if not menu.is_item_checked(location):
-				menu.toggle_item_checked(location);
+func update_radio_group_check_state(menu: PopupMenu, idx: int) -> void:
+	var item_count: int = menu.get_item_count();
+	for i in range(item_count):
+		if i == idx:
+			if not menu.is_item_checked(i):
+				menu.toggle_item_checked(i);
 		else:
-			if menu.is_item_checked(location):
-				menu.toggle_item_checked(location);
-		location += 1;
+			if menu.is_item_checked(i):
+				menu.toggle_item_checked(i);
 
 
 func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
@@ -313,7 +312,7 @@ func _on_ok2():
 	load_resolution_list();
 		
 	custom_res_window.hide();
-	
+
 func _on_cancel():
 	set_res_window.hide();
 
@@ -326,3 +325,15 @@ func get_plugin_name() -> String:
 
 func _init() -> void:
 	pass
+
+
+
+
+
+
+
+
+
+
+
+
