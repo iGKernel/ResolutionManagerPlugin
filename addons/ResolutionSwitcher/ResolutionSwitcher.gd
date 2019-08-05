@@ -5,6 +5,9 @@ extends EditorPlugin
 const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list.txt";
 const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_large.txt";
 
+var json_dict = {}
+
+
 var current_list: String = RESOLUTION_LIST_FILE_PATH;
 
 # Config file to load resolution list file:
@@ -27,6 +30,13 @@ var last_stretch = 0;
 
 # Initialization of the plugin:
 func _enter_tree() -> void:
+	var file = File.new()
+	file.open("res://addons/ResolutionSwitcher/stretch_settings_tooltip.json", file.READ)
+	var text = file.get_as_text()
+	json_dict = parse_json(text)
+	#print(json_dict["stretch"]["0"])
+	file.close()
+
 	# Create new menu button:
 	toolbar_menu_btn = MenuButton.new();
 	toolbar_menu_btn.text = "Resolution";
@@ -125,10 +135,8 @@ func load_resolution_list() -> void:
 			toolbar_menu_popup.add_item(text);
 			node.add_item(text);
 
-			#print(text)
 
-
-func _on_node_item_selected(id: int):
+func _on_node_item_selected(id: int) -> void:
 	var key = set_res_window.find_node("OptionButton").get_item_text(id);
 	
 	var width: int = resolution_data[key]["width"];
@@ -156,6 +164,7 @@ func load_list_submenu() -> void:
 	toolbar_menu_popup.add_child(list_submenu);
 	toolbar_menu_popup.add_submenu_item("Resolution List", "list");
 
+
 # Create stretch settings submenu:
 func load_stretch_settings_submenu() -> void:
 	if stretch_settings_submenu:
@@ -167,67 +176,18 @@ func load_stretch_settings_submenu() -> void:
 	stretch_settings_submenu.name = "stretch_settings"; # used in add_submenu_item function
 	stretch_settings_submenu.connect("id_pressed", self, "_on_stretch_settings_submenu_id_pressed");
 	
-	stretch_settings_submenu.add_radio_check_item("Full Control: disable, ignored", 0);
-	var tip: String = "No stretching happens. One unit in the scene corresponds to one pixel on the screen.\n"
-	tip += "Stretch Aspect has no effect. \nGood option for full control over every screen pixel,"
-	tip += " best option for 3D games.";
-	stretch_settings_submenu.set_item_tooltip(0, tip);
+	var array: Array =["Screen Fill: 2d, ignored", "One Ratio: 2d, keep",
+	"GUI/Vertical: 2d, keep_width", "Horizontal platformer: 2d, keep_height", "Expand: 2d, expand"];
 	
-	stretch_settings_submenu.add_radio_check_item("Screen Fill: 2d, ignored", 1);
-	tip = "Size is stretched to cover the whole screen, Good option for high resolution 2D artwork.\n";
-	tip += "Ignore the aspect ratio when stretching the screen.";
-	stretch_settings_submenu.set_item_tooltip(1, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("One Ratio: 2d, keep", 2);
-	tip = "Size is stretched to cover the whole screen, Good option for high resolution 2D artwork.\n";
-	tip += "Viewport will retains its original size regardless of the screen resolution, \nblack bars will be added to the top/bottom of the screen (“letterboxing”) \nor the sides (“pillarboxing”).";
-	tip += " Good option if you know the aspect ratio of your target \ndevices in advance, or if you don’t want to handle different aspect ratios.";
-	stretch_settings_submenu.set_item_tooltip(2, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("GUI/Vertical: 2d, keep_width", 3);
-	tip = "Size is stretched to cover the whole screen, Good option for high resolution 2D artwork.\n";
-	tip += "If the screen is wider than the base size, black bars are added at the left/right (pillarboxing).\nBut if the screen is taller than the base resolution, the viewport will be grown in the \nvertical direction (and more content will be visible to the bottom). \nYou can also think of this as “Expand Vertically.";
-	tip += " Best option for creating GUIs \nor HUDs that scale, so some controls can be anchored to the bottom.";
-	stretch_settings_submenu.set_item_tooltip(3, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Horizontal platformer: 2d, keep_height", 4);
-	tip = "Size is stretched to cover the whole screen, Good option for high resolution 2D artwork.\n";
-	tip += "If the screen is taller than the base size, black bars are added at the top/bottom (letterboxing). \nBut if the screen is wider than the base resolution, the viewport will be grown in the \nhorizontal direction (and more content will be visible to the right). \nYou can also think of this as “Expand Horizontally”.";
-	tip += " This is usually the best option \nfor 2D games that scroll horizontally (like runners or platformers).";
-	stretch_settings_submenu.set_item_tooltip(4, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Expand: 2d, expand", 5);
-	tip = "Size is stretched to cover the whole screen, Good option for high resolution 2D artwork.\n";
-	tip += "Depending on the screen aspect ratio, the viewport will either be larger in the \nhorizontal direction (if the screen is wider than the base size) or in the vertical direction (if the \nscreen is taller than the original size)";
-	stretch_settings_submenu.set_item_tooltip(5, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Pixel-Perfect, Screen Fill: viewport, ignored", 6);
-	tip = "Scene is rendered to viewport, then viewport is scaled to fit the screen. Useful with \npixel-precise games, or rendering to a lower resolution to improve performance.\n";
-	tip += "Ignore the aspect ratio when stretching the screen.";
-	stretch_settings_submenu.set_item_tooltip(6, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Pixel-Perfect, One Ratio: viewport, keep", 7);
-	tip = "Scene is rendered to viewport, then viewport is scaled to fit the screen. Useful with \npixel-precise games, or rendering to a lower resolution to improve performance.\n";
-	tip += "Viewport will retains its original size regardless of the screen resolution, \nblack bars will be added to the top/bottom of the screen (“letterboxing”) \nor the sides (“pillarboxing”).";
-	tip += " Good option if you know the aspect ratio of your target \ndevices in advance, or if you don’t want to handle different aspect ratios.";
-	stretch_settings_submenu.set_item_tooltip(7, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Pixel-Perfect, GUI/Vertical: viewport, keep_width", 8);
-	tip = "Scene is rendered to viewport, then viewport is scaled to fit the screen. Useful with \npixel-precise games, or rendering to a lower resolution to improve performance.\n";
-	tip += "If the screen is wider than the base size, black bars are added at the left/right (pillarboxing).\nBut if the screen is taller than the base resolution, the viewport will be grown in the \nvertical direction (and more content will be visible to the bottom). \nYou can also think of this as “Expand Vertically.";
-	tip += " Best option for creating GUIs \nor HUDs that scale, so some controls can be anchored to the bottom.";
-	stretch_settings_submenu.set_item_tooltip(8, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Pixel-Perfect, Horizontal platformer: viewport, keep_height", 9);
-	tip = "Scene is rendered to viewport, then viewport is scaled to fit the screen. Useful with \npixel-precise games, or rendering to a lower resolution to improve performance.\n";
-	tip += "If the screen is taller than the base size, black bars are added at the top/bottom (letterboxing). \nBut if the screen is wider than the base resolution, the viewport will be grown in the \nhorizontal direction (and more content will be visible to the right). \nYou can also think of this as “Expand Horizontally”.";
-	tip += " This is usually the best option \nfor 2D games that scroll horizontally (like runners or platformers).";
-	stretch_settings_submenu.set_item_tooltip(9, tip);
-	
-	stretch_settings_submenu.add_radio_check_item("Pixel-Perfect, Expand: viewport, expand", 10);
-	tip = "Scene is rendered to viewport, then viewport is scaled to fit the screen. Useful with \npixel-precise games, or rendering to a lower resolution to improve performance.\n";
-	tip += "Depending on the screen aspect ratio, the viewport will either be larger in the \nhorizontal direction (if the screen is wider than the base size) or in the vertical direction\n(if the screen is taller than the original size)";
-	stretch_settings_submenu.set_item_tooltip(10, tip);
+	var text: String = "Full Control: disable, ignored";
+	for i in range(11):
+		if i != 0 and i < 6:
+			text = array[i-1]
+		elif i >= 6:
+			text = "Pixel-Perfect, " + array[fmod(i-1, 5)];
+		
+		stretch_settings_submenu.add_radio_check_item(text, i);
+		stretch_settings_submenu.set_item_tooltip(i, json_dict[String(i)]);
 	
 	update_radio_group_check_state(stretch_settings_submenu, last_stretch);
 	
@@ -316,7 +276,7 @@ func set_res_logic() -> void:
 	set_res_window.find_node("cancel").connect("pressed", self, "_on_cancel", [], CONNECT_ONESHOT);
 
 
-func _on_ok():
+func _on_ok() -> void:
 	var width: int = int(set_res_window.find_node("width").text);
 	var height: int = int(set_res_window.find_node("height").text);
 	ProjectSettings.set_setting("display/window/size/width", width);
@@ -325,25 +285,25 @@ func _on_ok():
 	set_res_window.hide();
 
 
-func _on_ok2():
+func _on_ok2() -> void:
 	var width: String = String(custom_res_window.find_node("width").text);
 	var height: String = String(custom_res_window.find_node("height").text);
 	var label: String = String(custom_res_window.find_node("labelv").text);
 	
 	var text : String = width + "x" + height;
 	
-	config_file.set_value("Old Resolutions", label, text);
+	config_file.set_value("Custom Resolutions", label, text);
 	config_file.save(RESOLUTION_LIST_FILE_PATH);
 	load_resolution_list();
 		
 	custom_res_window.hide();
 
 
-func _on_cancel():
+func _on_cancel() -> void:
 	set_res_window.hide();
 
 
-func _on_cancel2():
+func _on_cancel2() -> void:
 	custom_res_window.hide();
 
 
