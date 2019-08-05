@@ -34,3 +34,6 @@ HVGA_Portrait="320x480"
 
 Square="400x400"
 
+[Old Resolutions]
+
+Mahmoud="150x100"
