@@ -45,7 +45,6 @@ text = "    Current resolution: "
 valign = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
-editor/display_folded = true
 margin_top = 24.0
 margin_right = 442.0
 margin_bottom = 186.0
@@ -140,7 +139,6 @@ rect_min_size = Vector2( 0, 30 )
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource( 1 )
-text = "123"
 align = 1
 context_menu_enabled = false
 caret_blink = true
@@ -173,7 +171,6 @@ rect_min_size = Vector2( 0, 30 )
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource( 1 )
-text = "123"
 align = 1
 context_menu_enabled = false
 caret_blink = true

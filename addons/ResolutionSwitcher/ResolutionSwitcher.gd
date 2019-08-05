@@ -4,6 +4,8 @@ extends EditorPlugin
 # Text file contain list of pre-defined resolutions:
 const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list.txt";
 const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_large.txt";
+const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_iphone.txt";
+const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_mostused.txt";
 
 var json_dict = {}
 
@@ -138,6 +140,8 @@ func load_resolution_list() -> void:
 
 func _on_node_item_selected(id: int) -> void:
 	var key = set_res_window.find_node("OptionButton").get_item_text(id);
+#	var idx = set_res_window.find_node("OptionButton").get_item_index(id);
+#	set_res_window.find_node("OptionButton").select(idx);
 	
 	var width: int = resolution_data[key]["width"];
 	var height: int = resolution_data[key]["height"];
@@ -156,8 +160,10 @@ func load_list_submenu() -> void:
 	list_submenu.name = "list"; # used in add_submenu_item function
 	list_submenu.connect("id_pressed", self, "_on_list_submenu_id_pressed");
 
-	list_submenu.add_radio_check_item("Basic Resolution List", 0);
-	list_submenu.add_radio_check_item("Large Resolution List", 1);
+	list_submenu.add_radio_check_item("Basic List", 0);
+	list_submenu.add_radio_check_item("Large List", 1);
+	list_submenu.add_radio_check_item("IPhone List", 2);
+	list_submenu.add_radio_check_item("Most Used List", 3);
 
 	update_radio_group_check_state(list_submenu, last_list);
 	
@@ -203,6 +209,11 @@ func _on_list_submenu_id_pressed(id: int) -> void:
 		current_list = RESOLUTION_LIST_FILE_PATH;
 	elif idx == 1:
 		current_list = LARGE_LIST_FILE_PATH;
+	elif idx == 2:
+		current_list = IPHONE_LIST_FILE_PATH;
+	elif idx == 3:
+		current_list = MOSTUSED_LIST_FILE_PATH;
+	
 	last_list = idx;
 	load_resolution_list();
 
@@ -266,9 +277,15 @@ func set_res_logic() -> void:
 	if set_res_window.get_parent() == null:
 		add_child(set_res_window);
 	
-	set_res_window.find_node("width").text = String(ProjectSettings.get_setting("display/window/size/width"));
-	set_res_window.find_node("height").text = String(ProjectSettings.get_setting("display/window/size/height"));
-	set_res_window.find_node("current").text = "    Current resolution: " + set_res_window.find_node("width").text + " x " + set_res_window.find_node("height").text;
+	set_res_window.find_node("OptionButton").text = "Choose pre-defined resolution";
+	set_res_window.find_node("width").text = "";
+	set_res_window.find_node("height").text = "";
+	set_res_window.find_node("width").placeholder_text = "Enter Width";
+	set_res_window.find_node("height").placeholder_text = "Enter Height";
+	var current_size: Vector2 = Vector2();
+	current_size.x = ProjectSettings.get_setting("display/window/size/width");
+	current_size.y = ProjectSettings.get_setting("display/window/size/height");
+	set_res_window.find_node("current").text = "    Current resolution: " + String(current_size.x) + " x " + String(current_size.y);
 
 	set_res_window.show();
 	set_res_window.popup_centered();
