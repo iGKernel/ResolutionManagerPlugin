@@ -4,7 +4,6 @@
 [ext_resource path="res://addons/ResolutionSwitcher/CustomResWindow.gd" type="Script" id=2]
 
 [node name="CustomResWindow" type="WindowDialog"]
-visible = true
 margin_left = 12.0
 margin_top = 34.0
 margin_right = 340.0

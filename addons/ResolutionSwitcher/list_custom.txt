@@ -1,0 +1,4 @@
+[Custom Resolutions]
+
+test234="230x90"
+testone="230x90"

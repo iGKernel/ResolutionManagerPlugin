@@ -1,4 +1,5 @@
 [Custom Resolutions]
 
-Square="400x400"
-gvcfbhf="455x444"
+test34="90x90"
+dfg="456x456"
+gh="45x45"
