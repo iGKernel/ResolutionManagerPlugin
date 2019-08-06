@@ -29,11 +29,3 @@ WVGA_Portrait="480x800"
 WXGA_Landscape="1280x800"
 FWVGA_Portrait="480x854"
 HVGA_Portrait="320x480"
-
-[Custom Resolutions]
-
-Square="400x400"
-
-[Old Resolutions]
-
-Mahmoud="150x100"

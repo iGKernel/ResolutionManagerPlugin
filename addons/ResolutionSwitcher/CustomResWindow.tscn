@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/ResolutionSwitcher/GUI.theme" type="Theme" id=1]
+[ext_resource path="res://addons/ResolutionSwitcher/CustomResWindow.gd" type="Script" id=2]
 
-[node name="custom_res_window" type="WindowDialog"]
+[node name="CustomResWindow" type="WindowDialog"]
 visible = true
 margin_left = 12.0
 margin_top = 34.0
@@ -10,6 +11,7 @@ margin_right = 340.0
 margin_bottom = 233.0
 theme = ExtResource( 1 )
 window_title = "Add Custom Resolution"
+script = ExtResource( 2 )
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -20,6 +22,7 @@ margin_right = -2.0
 margin_bottom = -2.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2"]
+editor/display_folded = true
 margin_right = 324.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
@@ -237,3 +240,5 @@ margin_bottom = 195.0
 rect_min_size = Vector2( 0, 10 )
 size_flags_horizontal = 3
 
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer/ok" to="." method="_on_ok_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HBoxContainer3/Panel/VBoxContainer1/VBoxContainer2/HBoxContainer/cancel" to="." method="_on_cancel_pressed"]

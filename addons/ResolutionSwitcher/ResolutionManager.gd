@@ -2,13 +2,14 @@ tool
 extends EditorPlugin
 
 # Text file contain list of pre-defined resolutions:
-const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list.txt";
-const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_large.txt";
-const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_iphone.txt";
-const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/list_mostused.txt";
+const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list.txt";
+const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_large.txt";
+const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_iphone.txt";
+const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_mostused.txt";
+const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_custom.txt";
 
 var json_dict = {}
-
+var res_list_id = 0;
 
 var current_list: String = RESOLUTION_LIST_FILE_PATH;
 
@@ -42,14 +43,15 @@ func _enter_tree() -> void:
 	# Create new menu button:
 	toolbar_menu_btn = MenuButton.new();
 	toolbar_menu_btn.text = "Resolution";
-	toolbar_menu_btn.icon = preload("res://addons/ResolutionSwitcher/iconfinder_desktop_3688496.png");
+	toolbar_menu_btn.icon = preload("res://addons/ResolutionSwitcher/icons/iconfinder_desktop_3688496.png");
 	
 	# Connect id_pressed signal to switch resloution:
 	toolbar_menu_popup = toolbar_menu_btn.get_popup();
 	toolbar_menu_popup.connect("id_pressed", self, "_on_toolbar_menu_popup_id_pressed");
 	
 	set_res_window = preload("set_res_window.tscn").instance();
-	custom_res_window = preload("custom_res_window.tscn").instance();
+	custom_res_window = preload("CustomResWindow.tscn").instance();
+	add_child(custom_res_window);
 	
 	# Fill popup menu and resolution data dictionary:
 	load_resolution_list();
@@ -102,6 +104,11 @@ func load_resolution_list() -> void:
 	toolbar_menu_popup.add_separator();
 	toolbar_menu_popup.add_item("Test Resolutions:");
 	toolbar_menu_popup.set_item_disabled(5, true);
+	if res_list_id == 4:
+		toolbar_menu_popup.set_item_disabled(3, false);
+	else:
+		toolbar_menu_popup.set_item_disabled(3, true);
+		
 	#	first = false;
 	#else:
 	#	for i in range(6, toolbar_menu_popup.get_item_count()):
@@ -164,6 +171,7 @@ func load_list_submenu() -> void:
 	list_submenu.add_radio_check_item("Large List", 1);
 	list_submenu.add_radio_check_item("IPhone List", 2);
 	list_submenu.add_radio_check_item("Most Used List", 3);
+	list_submenu.add_radio_check_item("Custom List", 4);
 
 	update_radio_group_check_state(list_submenu, last_list);
 	
@@ -204,7 +212,7 @@ func load_stretch_settings_submenu() -> void:
 func _on_list_submenu_id_pressed(id: int) -> void:
 	var idx = list_submenu.get_item_index(id);
 	update_radio_group_check_state(list_submenu, idx);
-	
+	res_list_id = idx;
 	if idx == 0:
 		current_list = RESOLUTION_LIST_FILE_PATH;
 	elif idx == 1:
@@ -213,6 +221,8 @@ func _on_list_submenu_id_pressed(id: int) -> void:
 		current_list = IPHONE_LIST_FILE_PATH;
 	elif idx == 3:
 		current_list = MOSTUSED_LIST_FILE_PATH;
+	elif idx == 4:
+		current_list = CUSTOM_LIST_FILE_PATH;
 	
 	last_list = idx;
 	load_resolution_list();
@@ -266,7 +276,8 @@ func _on_toolbar_menu_popup_id_pressed(id: int) -> void:
 func custom_res_logic() -> void:
 	if custom_res_window.get_parent() == null:
 		add_child(custom_res_window);
-		
+	
+	custom_res_window.connect("reload", self, "load_resolution_list");	
 	custom_res_window.show();
 	custom_res_window.popup_centered();
 	custom_res_window.find_node("ok").connect("pressed", self, "_on_ok2", [], CONNECT_ONESHOT);
@@ -306,13 +317,13 @@ func _on_ok2() -> void:
 	var width: String = String(custom_res_window.find_node("width").text);
 	var height: String = String(custom_res_window.find_node("height").text);
 	var label: String = String(custom_res_window.find_node("labelv").text);
-	
+
 	var text : String = width + "x" + height;
-	
+
 	config_file.set_value("Custom Resolutions", label, text);
-	config_file.save(RESOLUTION_LIST_FILE_PATH);
+	config_file.save(CUSTOM_LIST_FILE_PATH);
 	load_resolution_list();
-		
+
 	custom_res_window.hide();
 
 

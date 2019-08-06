@@ -67,8 +67,3 @@ FWVGA_Portrait="480x854"
 HVGA_Landscape="480x320"
 HVGA_Portrait="320x480"
 
-[Custom Resolutions]
-
-Square="400x400"
-
-

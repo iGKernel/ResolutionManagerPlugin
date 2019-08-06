@@ -1,0 +1,4 @@
+[Custom Resolutions]
+
+Square="400x400"
+gvcfbhf="455x444"
