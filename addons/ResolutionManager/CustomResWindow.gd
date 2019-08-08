@@ -1,7 +1,7 @@
 tool
 extends WindowDialog
 
-const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_custom.txt";
+const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_custom.txt";
 
 signal reload;
 

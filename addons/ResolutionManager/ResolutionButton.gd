@@ -2,12 +2,12 @@ tool
 extends MenuButton
 
 # Text file contain list of pre-defined resolutions:
-const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list.txt";
-const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_large.txt";
-const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_iphone.txt";
-const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_mostused.txt";
-const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_custom.txt";
-const TOOLTIP_JSON_FILE_PATH: String = "res://addons/ResolutionSwitcher/stretch_settings_tooltip.json";
+const RESOLUTION_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list.txt";
+const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_large.txt";
+const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_iphone.txt";
+const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_mostused.txt";
+const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_custom.txt";
+const TOOLTIP_JSON_FILE_PATH: String = "res://addons/ResolutionManager/stretch_settings_tooltip.json";
 
 # Canvas editor menu button and popup:
 var menu_popup: PopupMenu = null;
