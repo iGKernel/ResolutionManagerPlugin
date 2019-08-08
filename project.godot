@@ -21,11 +21,12 @@ config/icon="res://icon.png"
 
 [display]
 
-window/size/width=800
-window/size/test_width="100"
-window/size/test_height="120"
+window/size/width=454
+window/size/height=545
+window/size/test_width="400"
+window/size/test_height="350"
 window/stretch/mode="2d"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep_width"
 
 [editor_plugins]
 

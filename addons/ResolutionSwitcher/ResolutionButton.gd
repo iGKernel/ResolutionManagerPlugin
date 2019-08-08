@@ -7,60 +7,64 @@ const LARGE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list
 const IPHONE_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_iphone.txt";
 const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_mostused.txt";
 const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_custom.txt";
+const TOOLTIP_JSON_FILE_PATH: String = "res://addons/ResolutionSwitcher/stretch_settings_tooltip.json";
 
 enum ListsPath {
 	BASIC, LARGE, IPHONE, MOSTUSED, CUSTOM
 };
 
-var current_list: String = RESOLUTION_LIST_FILE_PATH;
+
+# Canvas editor menu button and popup:
+var menu_popup: PopupMenu = null;
+var stretch_settings_submenu: PopupMenu = null;
+var list_submenu: PopupMenu = null;
+var set_res_window: Node = null;
+var custom_res_window: Node = null;
+
+var config_file: ConfigFile = null;
+var resolution_data: Dictionary = {};
 var json_dict: Dictionary = {};
+var current_list: String = RESOLUTION_LIST_FILE_PATH;
 var res_list_id: int = 0;
-var first: bool = true;
 var last_list: int = 0;
 var last_stretch: int = 0;
 
-# Canvas editor menu button and popup:
-var menu_popup: PopupMenu  = null;
-var set_res_window = null
-var custom_res_window = null
-var stretch_settings_submenu: PopupMenu = null;
-var list_submenu: PopupMenu = null;
-
-# Config file to load resolution list file:
-var config_file: ConfigFile = null;
-
-# Dictionary to hold the width and height of clicked resolution:
-var resolution_data: Dictionary = {};
-
-
 func _enter_tree()-> void:
-	var file: File = File.new();
-	file.open("res://addons/ResolutionSwitcher/stretch_settings_tooltip.json", file.READ);
-	json_dict = parse_json(file.get_as_text());
-	file.close()
+	# Init Set base resolution window:
+	set_res_window = preload("BaseResWindow.tscn").instance();
+	add_child(set_res_window);
 	
-	# Connect id_pressed signal to switch resloution:
-	menu_popup = get_popup();
-	menu_popup.connect("id_pressed", self, "_on_menu_popup_id_pressed");
-	
-	set_res_window = preload("set_res_window.tscn").instance();
+	# Init custom resolution window:
 	custom_res_window = preload("CustomResWindow.tscn").instance();
+	custom_res_window.connect("reload", self, "load_resolution_list")
+	add_child(custom_res_window);
+	
+	# Parse JSON file:
+	var file: File = File.new();
+	file.open(TOOLTIP_JSON_FILE_PATH, file.READ);
+	json_dict = parse_json(file.get_as_text());
+	file.close();
+	
+	# Connect index_pressed signal to switch resloution:
+	menu_popup = get_popup();
+	menu_popup.connect("index_pressed", self, "_on_menu_popup_index_pressed");
 	
 	# Fill popup menu and resolution data dictionary:
 	load_resolution_list();
-	custom_res_window.connect("reload", self, "load_resolution_list")
 
 
 func _exit_tree()-> void:
 	# Clear popup menu and resolution data dictionary:
 	resolution_data.clear();
+	json_dict.clear();
 	menu_popup.clear();
-	
-	# Disconnect id_pressed signal:
-	menu_popup.disconnect("id_pressed", self, "_on_menu_popup_id_pressed");
 	
 	# Free menu button and popup:
 	menu_popup.queue_free();
+	stretch_settings_submenu.queue_free();
+	list_submenu.queue_free();
+	set_res_window.queue_free();
+	custom_res_window.queue_free();
 
 
 # Fill popup menu and resolution data dictionary:
@@ -88,20 +92,14 @@ func load_resolution_list()-> void:
 		menu_popup.set_item_disabled(3, true);
 	
 	var node = set_res_window.find_node("OptionButton");
-	if first:
-		node.connect("item_selected", self, "_on_node_item_selected");
-		first = false;
 	node.clear();
 	
 	# Fill data:
-	var sections: PoolStringArray = config_file.get_sections();
-	
-	for section in sections:
-		var keys: PoolStringArray = config_file.get_section_keys(section);
+	for section in config_file.get_sections():
 		menu_popup.add_separator(section);
 		node.add_separator();
 		
-		for key in keys:
+		for key in config_file.get_section_keys(section):
 			# Split at "x":
 			var value = config_file.get_value(section,key).split("x");
 			var width = value[0];
@@ -135,7 +133,7 @@ func load_stretch_settings_submenu()-> void:
 	var text: String = "Full Control: disable, ignored";
 	for i in range(11):
 		if i != 0 and i < 6:
-			text = array[i-1]
+			text = array[i-1];
 		elif i >= 6:
 			text = "Pixel-Perfect, " + array[fmod(i-1, 5)];
 		
@@ -181,43 +179,14 @@ func update_radio_group_check_state(menu: PopupMenu, idx: int)-> void:
 				menu.toggle_item_checked(i);
 
 
-func set_res_logic()-> void:
-	if set_res_window.get_parent() == null:
-		add_child(set_res_window);
-	
-	set_res_window.find_node("OptionButton").text = "Choose pre-defined resolution";
-	set_res_window.find_node("width").text = "";
-	set_res_window.find_node("height").text = "";
-	set_res_window.find_node("width").placeholder_text = "Enter Width";
-	set_res_window.find_node("height").placeholder_text = "Enter Height";
-	var current_size: Vector2 = Vector2();
-	current_size.x = ProjectSettings.get_setting("display/window/size/width");
-	current_size.y = ProjectSettings.get_setting("display/window/size/height");
-	set_res_window.find_node("current").text = "    Current resolution: " + String(current_size.x) + " x " + String(current_size.y);
-
-	set_res_window.show();
-	set_res_window.popup_centered();
-	set_res_window.find_node("ok").connect("pressed", self, "_on_ok", [], CONNECT_ONESHOT);
-	set_res_window.find_node("cancel").connect("pressed", self, "_on_cancel", [], CONNECT_ONESHOT);
-
-
-func custom_res_logic()-> void:
-	if custom_res_window.get_parent() == null:
-		add_child(custom_res_window);
-	
-	#custom_res_window.connect("reload", self, "load_resolution_list");	
-	custom_res_window.show();
-	custom_res_window.popup_centered();
-	#custom_res_window.find_node("ok").connect("pressed", self, "_on_ok2", [], CONNECT_ONESHOT);
-	#custom_res_window.find_node("cancel").connect("pressed", self, "_on_cancel2", [], CONNECT_ONESHOT);
-
-
-func _on_menu_popup_id_pressed(id: int)-> void:
-	var key := menu_popup.get_item_text(id);
+func _on_menu_popup_index_pressed(idx: int)-> void:
+	var key := menu_popup.get_item_text(idx);
 	if key == "Set Base Resolution":
-		set_res_logic();
+		set_res_window.show();
+		set_res_window.popup_centered();
 	elif key == "Add Custom Resolution":
-		custom_res_logic();
+		custom_res_window.show();
+		custom_res_window.popup_centered();
 	else:
 		var width: int = resolution_data[key]["width"];
 		var height: int = resolution_data[key]["height"];
@@ -227,18 +196,6 @@ func _on_menu_popup_id_pressed(id: int)-> void:
 		ProjectSettings.set_setting("display/window/size/test_width", width);
 		ProjectSettings.set_setting("display/window/size/test_height", height);
 		ProjectSettings.save();
-
-
-func _on_node_item_selected(id: int)-> void:
-	var key = set_res_window.find_node("OptionButton").get_item_text(id);
-#	var idx = set_res_window.find_node("OptionButton").get_item_index(id);
-#	set_res_window.find_node("OptionButton").select(idx);
-	
-	var width: int = resolution_data[key]["width"];
-	var height: int = resolution_data[key]["height"];
-	
-	set_res_window.find_node("width").text = String(width);
-	set_res_window.find_node("height").text = String(height);
 
 
 func _on_stretch_settings_submenu_id_pressed(id: int)-> void:
@@ -275,18 +232,5 @@ func _on_list_submenu_id_pressed(id: int)-> void:
 	
 	last_list = idx;
 	load_resolution_list();
-
-
-func _on_ok()-> void:
-	var width: int = int(set_res_window.find_node("width").text);
-	var height: int = int(set_res_window.find_node("height").text);
-	ProjectSettings.set_setting("display/window/size/width", width);
-	ProjectSettings.set_setting("display/window/size/height", height);
-	ProjectSettings.save();
-	set_res_window.hide();
-
-
-func _on_cancel()-> void:
-	set_res_window.hide();
 
 

@@ -1,25 +1,21 @@
 tool
 extends EditorPlugin
 
-# Canvas editor menu button and popup:
-var toolbar_menu_btn: MenuButton = null;
+# Resolution menu button:
+var resolution_menu_btn: MenuButton = null;
 
-# Initialization of the plugin:
+# Add menu button to canvas editor:
 func _enter_tree()-> void:
-	# Instance menu button:
-	toolbar_menu_btn = preload("ResolutionButton.tscn").instance();
-	
-	# Add menu button to canvas editor toolbar:
-	add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, toolbar_menu_btn);
+	resolution_menu_btn = preload("ResolutionButton.tscn").instance();
+	add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, resolution_menu_btn);
 
 
-# Clean-up of the plugin:
+# Remove menu button from canvas editor:
 func _exit_tree()-> void:
-	# Remove menu button from canvas editor toolbar:
-	remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, toolbar_menu_btn);
-	
-	# Free menu button:
-	toolbar_menu_btn.queue_free();
+	remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, resolution_menu_btn);
+	resolution_menu_btn.queue_free();
 
+
+# Plugin name:
 func get_plugin_name()-> String: 
-	return "ResolutionManager";
+	return "Resolution Manager";

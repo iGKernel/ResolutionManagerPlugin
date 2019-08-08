@@ -1,15 +1,16 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/ResolutionSwitcher/GUI.theme" type="Theme" id=1]
+[ext_resource path="res://addons/ResolutionSwitcher/BaseResWindow.gd" type="Script" id=2]
 
-[node name="set_res_window" type="WindowDialog"]
-visible = true
+[node name="BaseResWindow" type="WindowDialog"]
 margin_left = 12.0
 margin_top = 34.0
 margin_right = 458.0
 margin_bottom = 238.0
 theme = ExtResource( 1 )
 window_title = "Set Base Resolution"
+script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -251,3 +252,7 @@ margin_bottom = 200.0
 rect_min_size = Vector2( 0, 10 )
 size_flags_horizontal = 3
 
+[connection signal="about_to_show" from="." to="." method="_on_BaseResWindow_about_to_show"]
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer3/Panel/VBoxContainer/VBoxContainer1/HBoxContainer2/HBoxContainer2/OptionButton" to="." method="_on_OptionButton_item_selected"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/Panel/VBoxContainer/VBoxContainer2/HBoxContainer/ok" to="." method="_on_ok_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/Panel/VBoxContainer/VBoxContainer2/HBoxContainer/cancel" to="." method="_on_cancel_pressed"]
