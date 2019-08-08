@@ -39,10 +39,20 @@ func _on_OptionButton_item_selected(id: int)-> void:
 func _on_ok_pressed()-> void:
 	var width: int = int(width_node.text);
 	var height: int = int(height_node.text);
+
+	if height == 0 or width == 0:
+		var error_dialog = AcceptDialog.new();
+		add_child(error_dialog);
+		error_dialog.window_title = "Error";
+		error_dialog.dialog_text = "Resolution not added because of incomplete\ndetails";
+		error_dialog.popup_exclusive = true;
+		error_dialog.popup_centered();
+		error_dialog.show();
+	else:
+		ProjectSettings.set_setting("display/window/size/width", width);
+		ProjectSettings.set_setting("display/window/size/height", height);
+		ProjectSettings.save();
 	
-	ProjectSettings.set_setting("display/window/size/width", width);
-	ProjectSettings.set_setting("display/window/size/height", height);
-	ProjectSettings.save();
 	hide();
 	_clear_line_edit_texts();
 
