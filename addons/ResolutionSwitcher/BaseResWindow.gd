@@ -1,10 +1,10 @@
 tool
 extends WindowDialog
 
-onready var width_node: LineEdit = find_node("width");
-onready var height_node: LineEdit = find_node("height");
+onready var width_node: LineEdit = find_node("Width");
+onready var height_node: LineEdit = find_node("Height");
 onready var option_node: OptionButton = find_node("OptionButton");
-onready var current_node: OptionButton = find_node("current");
+onready var current_node: OptionButton = find_node("CurrentRes");
 
 
 # Display current resolution:
@@ -15,7 +15,7 @@ func _on_BaseResWindow_about_to_show()-> void:
 	var current_size: Vector2 = Vector2();
 	var x = ProjectSettings.get_setting("display/window/size/width");
 	var y = ProjectSettings.get_setting("display/window/size/height");
-	current_node.text = "    Current resolution: ";
+	current_node.text = "Current resolution: ";
 	current_node.text += String(x) + " x " + String(y);
 
 
@@ -36,7 +36,7 @@ func _on_OptionButton_item_selected(id: int)-> void:
 
 
 # Set base size:
-func _on_ok_pressed()-> void:
+func _on_Ok_pressed()-> void:
 	var width: int = int(width_node.text);
 	var height: int = int(height_node.text);
 
@@ -57,7 +57,7 @@ func _on_ok_pressed()-> void:
 	_clear_line_edit_texts();
 
 
-func _on_cancel_pressed()-> void:
+func _on_Cancel_pressed()-> void:
 	hide();
 	_clear_line_edit_texts();
 

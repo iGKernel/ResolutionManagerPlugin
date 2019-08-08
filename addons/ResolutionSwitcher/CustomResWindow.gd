@@ -6,13 +6,13 @@ const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/lis
 signal reload;
 
 onready var config_file: ConfigFile = ConfigFile.new();
-onready var width_node: LineEdit = find_node("width");
-onready var height_node: LineEdit = find_node("height");
-onready var label_node: LineEdit = find_node("labelv");
+onready var width_node: LineEdit = find_node("Width");
+onready var height_node: LineEdit = find_node("Height");
+onready var label_node: LineEdit = find_node("ResLabel");
 
 
 # Save size in config file and reload the menu:
-func _on_ok_pressed()-> void:
+func _on_Ok_pressed()-> void:
 	var label: String = label_node.text;
 	var text : String = width_node.text + "x" + height_node.text;
 	
@@ -37,7 +37,7 @@ func _on_ok_pressed()-> void:
 	_clear_line_edit_texts();
 
 
-func _on_cancel_pressed()-> void:
+func _on_Cancel_pressed()-> void:
 	hide();
 	_clear_line_edit_texts();
 

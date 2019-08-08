@@ -92,7 +92,6 @@ func load_resolution_list()-> void:
 	# Fill data:
 	for section in config_file.get_sections():
 		menu_popup.add_separator(section);
-		node.add_separator();
 		
 		for key in config_file.get_section_keys(section):
 			# Split at "x":
@@ -109,6 +108,8 @@ func load_resolution_list()-> void:
 			
 			menu_popup.add_item(text);
 			node.add_item(text);
+			
+		node.add_separator();
 
 
 # Create stretch settings submenu:
