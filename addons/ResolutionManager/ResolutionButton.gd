@@ -126,15 +126,16 @@ func load_stretch_settings_submenu()-> void:
 	stretch_settings_submenu.connect("index_pressed", self, 
 				"_on_stretch_settings_submenu_index_pressed");
 	
-	var array: Array =["Screen Fill: 2d, ignored", "One Ratio: 2d, keep",
-	"GUI/Vertical: 2d, keep_width", "Horizontal platformer: 2d, keep_height", "Expand: 2d, expand"];
+	var a: Array = ["2D, ", "VP, "];
+	var b: Array = ["ignore", "keep", "kp_w", "kp_ht", "expand"];
+	var c: Array =["Scrn Fill", "One Ratio", "GUI", "Platformer", "Expand"];
 	
-	var text: String = "Full Control: disable, ignored";
+	var text: String = "Full Ctrl: disable, ignore";
 	for i in range(11):
 		if i != 0 and i < 6:
-			text = array[i-1];
+			text = c[i-1] + ": " + a[0] + b[i-1];
 		elif i >= 6:
-			text = "Pixel-Perfect, " + array[fmod(i-1, 5)];
+			text = "Pixel, " + c[fmod(i-1, 5)] + ": " + a[1] + b[fmod(i-1, 5)];
 		
 		stretch_settings_submenu.add_radio_check_item(text, i);
 		stretch_settings_submenu.set_item_tooltip(i, json_dict[String(i)]);
