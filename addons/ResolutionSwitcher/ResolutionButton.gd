@@ -9,11 +9,6 @@ const MOSTUSED_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/l
 const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionSwitcher/lists/list_custom.txt";
 const TOOLTIP_JSON_FILE_PATH: String = "res://addons/ResolutionSwitcher/stretch_settings_tooltip.json";
 
-enum ListsPath {
-	BASIC, LARGE, IPHONE, MOSTUSED, CUSTOM
-};
-
-
 # Canvas editor menu button and popup:
 var menu_popup: PopupMenu = null;
 var stretch_settings_submenu: PopupMenu = null;
@@ -118,14 +113,17 @@ func load_resolution_list()-> void:
 
 # Create stretch settings submenu:
 func load_stretch_settings_submenu()-> void:
+	var load_last: bool = true;
 	if stretch_settings_submenu:
 		menu_popup.remove_child(stretch_settings_submenu);
 		stretch_settings_submenu.clear();
 		stretch_settings_submenu.queue_free();
+		load_last = false;
 		
 	stretch_settings_submenu = PopupMenu.new();
-	stretch_settings_submenu.name = "stretch_settings"; # used in add_submenu_item function
-	stretch_settings_submenu.connect("id_pressed", self, "_on_stretch_settings_submenu_id_pressed");
+	stretch_settings_submenu.name = "stretch_settings";
+	stretch_settings_submenu.connect("index_pressed", self, 
+				"_on_stretch_settings_submenu_index_pressed");
 	
 	var array: Array =["Screen Fill: 2d, ignored", "One Ratio: 2d, keep",
 	"GUI/Vertical: 2d, keep_width", "Horizontal platformer: 2d, keep_height", "Expand: 2d, expand"];
@@ -140,6 +138,17 @@ func load_stretch_settings_submenu()-> void:
 		stretch_settings_submenu.add_radio_check_item(text, i);
 		stretch_settings_submenu.set_item_tooltip(i, json_dict[String(i)]);
 	
+	if load_last:
+		var mode = String(ProjectSettings.get_setting("display/window/stretch/mode"));
+		var aspect = String(ProjectSettings.get_setting("display/window/stretch/aspect"));
+		var aspects: Array = ["ignore", "keep", "keep_width", "keep_height", "expand"];
+		if mode == "disabled":
+			last_stretch = 0;
+		elif mode == "2d":
+			last_stretch = aspects.find(aspect) + 1;
+		elif mode == "viewport":
+			last_stretch = aspects.find(aspect) + 6;
+		
 	update_radio_group_check_state(stretch_settings_submenu, last_stretch);
 	
 	menu_popup.add_child(stretch_settings_submenu);
@@ -198,21 +207,21 @@ func _on_menu_popup_index_pressed(idx: int)-> void:
 		ProjectSettings.save();
 
 
-func _on_stretch_settings_submenu_id_pressed(id: int)-> void:
+func _on_stretch_settings_submenu_index_pressed(idx: int)-> void:
 	var array: Array = ["ignore", "keep", "keep_width", "keep_height", "expand"];
 	var mode = "disabled";
 	var aspect = "ignore";
-	if id != 0 and id < 6:
+	if idx != 0 and idx < 6:
 		mode = "2d";
-		aspect = array[id-1];
-	elif id >= 6:
+		aspect = array[idx-1];
+	elif idx >= 6:
 		mode = "viewport";
-		aspect = array[fmod(id-1, 5)];
+		aspect = array[fmod(idx-1, 5)];
 
-	update_radio_group_check_state(stretch_settings_submenu, id);
+	update_radio_group_check_state(stretch_settings_submenu, idx);
 	ProjectSettings.set_setting("display/window/stretch/mode", mode);
 	ProjectSettings.set_setting("display/window/stretch/aspect", aspect);
-	last_stretch = id;
+	last_stretch = idx;
 
 
 func _on_list_submenu_id_pressed(id: int)-> void:
