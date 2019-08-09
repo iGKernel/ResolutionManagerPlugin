@@ -37,8 +37,8 @@ iPadPro12.9/2017_Portrait="2048x2732"
 
 [iPhone]
 
-iPhoneiPhone2G/3G/3GS_Landscape="480x320"
-iPhoneiPhone2G/3G/3GS_Portrait="320x480"
+iPhone2G/3G/3GS_Landscape="480x320"
+iPhone2G/3G/3GS_Portrait="320x480"
 iPhone4/4S_Landscape="960x640"
 iPhone4/4S_Portrait="640x960"
 iPhone5/5S/5C/SE_Landscape="1136x640"

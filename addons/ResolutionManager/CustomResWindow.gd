@@ -1,14 +1,14 @@
 tool
 extends WindowDialog
 
-const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_custom.txt";
-
 signal reload;
 
 onready var config_file: ConfigFile = ConfigFile.new();
 onready var width_node: LineEdit = find_node("Width");
 onready var height_node: LineEdit = find_node("Height");
 onready var label_node: LineEdit = find_node("ResLabel");
+
+const CUSTOM_LIST_FILE_PATH: String = "res://addons/ResolutionManager/lists/list_custom.txt";
 
 
 # Save size in config file and reload the menu:

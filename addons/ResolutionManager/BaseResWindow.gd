@@ -4,7 +4,11 @@ extends WindowDialog
 onready var width_node: LineEdit = find_node("Width");
 onready var height_node: LineEdit = find_node("Height");
 onready var option_node: OptionButton = find_node("OptionButton");
-onready var current_node: OptionButton = find_node("CurrentRes");
+onready var option_popup: PopupMenu = option_node.get_popup();
+onready var current_node: Label = find_node("CurrentRes");
+
+func _ready():
+	option_popup.connect("index_pressed", self, "_on_OptionButton_item_selected");
 
 
 # Display current resolution:
@@ -22,6 +26,7 @@ func _on_BaseResWindow_about_to_show()-> void:
 # Extract size from option button text:
 func _on_OptionButton_item_selected(id: int)-> void:
 	var key = option_node.get_item_text(id);
+	option_node.text = key;
 	
 	var size: Vector2 = Vector2();
 	

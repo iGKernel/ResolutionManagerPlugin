@@ -9,3 +9,23 @@ position = Vector2( 391.83, 303.631 )
 scale = Vector2( 12.741, 9.44467 )
 texture = ExtResource( 1 )
 
+[node name="icon2" type="Sprite" parent="."]
+position = Vector2( 917.807, 139.305 )
+scale = Vector2( 3.58788, 3.56052 )
+texture = ExtResource( 1 )
+
+[node name="icon3" type="Sprite" parent="."]
+position = Vector2( 1704.73, 123.327 )
+scale = Vector2( 3.58788, 3.56052 )
+texture = ExtResource( 1 )
+
+[node name="icon4" type="Sprite" parent="."]
+position = Vector2( 1721.03, 1655.73 )
+scale = Vector2( 3.58788, 3.56052 )
+texture = ExtResource( 1 )
+
+[node name="icon5" type="Sprite" parent="."]
+position = Vector2( 123.421, 1633.99 )
+scale = Vector2( 3.58788, 3.56052 )
+texture = ExtResource( 1 )
+

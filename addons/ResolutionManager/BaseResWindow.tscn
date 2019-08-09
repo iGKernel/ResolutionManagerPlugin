@@ -4,6 +4,7 @@
 [ext_resource path="res://addons/ResolutionManager/BaseResWindow.gd" type="Script" id=2]
 
 [node name="BaseResWindow" type="WindowDialog"]
+visible = true
 margin_left = 11.0
 margin_top = 35.0
 margin_right = 511.0

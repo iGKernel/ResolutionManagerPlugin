@@ -21,10 +21,9 @@ config/icon="res://icon.png"
 
 [display]
 
-window/size/width=2560
-window/size/height=1440
-window/size/test_width="1280"
-window/size/test_height="1024"
+window/size/width=800
+window/size/test_width="600"
+window/size/test_height="400"
 
 [editor_plugins]
 
