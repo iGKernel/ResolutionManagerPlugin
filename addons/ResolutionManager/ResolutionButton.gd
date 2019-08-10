@@ -60,18 +60,26 @@ func _exit_tree()-> void:
 	# Clear popup menu and dictionaries:
 	resolution_data.clear();
 	json_dict.clear();
-	menu_popup.clear();
-	
+
 	# Free menus and popups:
-	menu_popup.queue_free();
-	stretch_settings_submenu.queue_free();
-	list_submenu.queue_free();
-	set_res_window.queue_free();
-	custom_res_window.queue_free();
+	if menu_popup:
+		menu_popup.clear();
+		menu_popup.queue_free();
+	if stretch_settings_submenu:
+		stretch_settings_submenu.queue_free();
+	if list_submenu:
+		list_submenu.queue_free();
+	if set_res_window:
+		set_res_window.queue_free();
+	if custom_res_window:
+		custom_res_window.queue_free();
 
 
 # Fill popup menu and resolution data dictionary:
 func load_main_menu()-> void:
+	if not menu_popup or not option_btn:
+		return;
+		
 	# Load current list:
 	config_file = ConfigFile.new();
 	var is_loaded: = config_file.load(current_list);
@@ -80,8 +88,11 @@ func load_main_menu()-> void:
 	
 	# Clear when reloading:
 	resolution_data = {};
-	menu_popup.clear();
-	option_btn.clear();
+	
+	if menu_popup:
+		menu_popup.clear();
+	if option_btn:
+		option_btn.clear();
 	
 	# Load submenus:
 	load_stretch_settings_submenu();
@@ -193,6 +204,9 @@ func load_list_submenu()-> void:
 
 # Check radio btn in a radio group:
 func update_radio_group_check_state(menu: PopupMenu, idx: int)-> void:
+	if not menu:
+		return;
+	
 	var item_count: int = menu.get_item_count();
 	for i in range(item_count):
 		if i == idx:
@@ -205,6 +219,9 @@ func update_radio_group_check_state(menu: PopupMenu, idx: int)-> void:
 
 # Event: main menu item pressed:
 func _on_menu_popup_index_pressed(idx: int)-> void:
+	if not menu_popup:
+		return;
+	
 	var key := menu_popup.get_item_text(idx);
 	if key == "Set Base Resolution":
 		set_res_window.show();
