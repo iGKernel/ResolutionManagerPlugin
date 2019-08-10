@@ -8,15 +8,15 @@
 ## Features:
 - Choose stretch mode and aspect from predefiend list, added tooltip for each one.
 ![Alt text](screenshots/2.png?raw=true)
-- Set base resolution, directly or choosing from a list. 
+- Set base resolution, directly or choosing from a list. (will throw error dialog if any value is zero)
 ![Alt text](screenshots/3.png?raw=true)
 - Contain a lists of resolution to choose from (like iphone, ipad, android, basic, most used).
 ![Alt text](screenshots/4.png?raw=true)
-- If the resolution list is custom, you can define your own resolution. Any custom resolution can be set as a base or test resolution.
+- If the resolution list is custom, you can define your own resolution. Any custom resolution can be set as a base or test resolution. (will throw error dialog if any value is zero)
 ![Alt text](screenshots/5.png?raw=true)
 ## How to use:
-- Create addons file in your project directory.
-- Copy ResolutionManager file to addons.
+- Create addons folder in your project directory.
+- Copy ResolutionManager folder to addons.
 - In Godot goto: Project/ Project Settings/ Plugins tap/ activate ResolutionManager plugin.
 
 ## Todo:
