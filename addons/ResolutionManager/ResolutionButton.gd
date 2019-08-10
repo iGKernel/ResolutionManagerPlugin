@@ -4,6 +4,7 @@ extends MenuButton
 # Text files paths:
 const LIST_PATH: String = "res://addons/ResolutionManager/lists/list_";
 const TOOLTIP_JSON_PATH: String = "res://addons/ResolutionManager/stretch_settings_tooltip.json";
+const MENU_BUTTON_TOOLTIP = "Quickly set base/test resolutions"
 
 # Canvas editor menu and submenu popups:
 var menu_popup: PopupMenu = null;
@@ -51,6 +52,7 @@ func _enter_tree()-> void:
 	
 	# Fill popup menu and resolution data dictionary:
 	load_main_menu();
+	hint_tooltip = MENU_BUTTON_TOOLTIP;
 
 
 # Free:
