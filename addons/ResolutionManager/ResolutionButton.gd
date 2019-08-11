@@ -34,22 +34,22 @@ func _enter_tree()-> void:
 	set_res_window = preload("BaseResWindow.tscn").instance();
 	option_btn = set_res_window.find_node("OptionButton");
 	add_child(set_res_window);
-	
+
 	# Init custom resolution window:
 	custom_res_window = preload("CustomResWindow.tscn").instance();
 	custom_res_window.connect("reload", self, "load_main_menu")
 	add_child(custom_res_window);
-	
+
 	# Parse JSON file:
 	var file: File = File.new();
 	file.open(TOOLTIP_JSON_PATH, file.READ);
 	json_dict = parse_json(file.get_as_text());
 	file.close();
-	
+
 	# Connect index_pressed signal to switch resloution:
 	menu_popup = get_popup();
 	menu_popup.connect("index_pressed", self, "_on_menu_popup_index_pressed");
-	
+
 	# Fill popup menu and resolution data dictionary:
 	load_main_menu();
 	hint_tooltip = MENU_BUTTON_TOOLTIP;
@@ -79,52 +79,52 @@ func _exit_tree()-> void:
 func load_main_menu()-> void:
 	if not menu_popup or not option_btn:
 		return;
-		
+
 	# Load current list:
 	config_file = ConfigFile.new();
 	var is_loaded: = config_file.load(current_list);
 	if is_loaded != OK:
 		return;
-	
+
 	# Clear when reloading:
 	resolution_data = {};
-	
+
 	if menu_popup:
 		menu_popup.clear();
 	if option_btn:
 		option_btn.clear();
-	
+
 	# Load submenus:
 	load_stretch_settings_submenu();
 	load_list_submenu();
-	
+
 	# Load window item:
 	menu_popup.add_item("Set Base Resolution");
 	menu_popup.add_item("Add Custom Resolution");
 	menu_popup.add_separator();
 	menu_popup.set_item_disabled(3, not(list_idx == 6));
-	
+
 	# Load test resolutions:
 	for section in config_file.get_sections():
 		menu_popup.add_separator(section);
-		
+
 		for key in config_file.get_section_keys(section):
 			var value = config_file.get_value(section,key).split("x");
 			var width = value[0];
 			var height = value[1];
 			var text = key + "    (" + width + "x" + height +")";
-			
+
 			resolution_data[text] = {
 				"label": key,
 				"width": width,
 				"height": height
 			};
-			
+
 			menu_popup.add_item(text);
 			option_btn.add_item(text);
-			
+
 		option_btn.add_separator();
-	
+
 	var count: int = option_btn.get_item_count();
 	option_btn.remove_item(count-1);
 
@@ -136,28 +136,28 @@ func load_stretch_settings_submenu()-> void:
 		menu_popup.remove_child(stretch_settings_submenu);
 		stretch_settings_submenu.clear();
 		stretch_settings_submenu.queue_free();
-	
+
 	# Create new:
 	stretch_settings_submenu = PopupMenu.new();
 	stretch_settings_submenu.name = "stretch_settings";
-	stretch_settings_submenu.connect("index_pressed", self, 
+	stretch_settings_submenu.connect("index_pressed", self,
 				"_on_stretch_settings_submenu_index_pressed");
-	
-	# Add items: 
+
+	# Add items:
 	var a: Array = ["Scrn Fill", "One Ratio", "GUI", "Platformer", "Expand"];
 	var b: Array = ["2D, ", "VP, "];
 	var c: Array = ["ignore", "keep", "kp_w", "kp_ht", "expand"];
-	
+
 	var text: String = "Full Ctrl: disable, ignore";
 	for i in range(11):
 		if i != 0 and i < 6:
 			text = a[i-1] + ": " + b[0] + c[i-1];
 		elif i >= 6:
 			text = "Pixel, " + a[fmod(i-1, 5)] + ": " + b[1] + c[fmod(i-1, 5)];
-		
+
 		stretch_settings_submenu.add_radio_check_item(text, i);
 		stretch_settings_submenu.set_item_tooltip(i, json_dict[String(i)]);
-	
+
 	# Get current and check it:
 	var mode = String(ProjectSettings.get_setting("display/window/stretch/mode"));
 	var aspect = String(ProjectSettings.get_setting("display/window/stretch/aspect"));
@@ -168,9 +168,9 @@ func load_stretch_settings_submenu()-> void:
 		stretch_idx = aspects.find(aspect) + 1;
 	elif mode == "viewport":
 		stretch_idx = aspects.find(aspect) + 6;
-	
+
 	update_radio_group_check_state(stretch_settings_submenu, stretch_idx);
-	
+
 	# Attach submenu:
 	menu_popup.add_child(stretch_settings_submenu);
 	menu_popup.add_submenu_item("Stretch Settings", "stretch_settings");
@@ -183,20 +183,20 @@ func load_list_submenu()-> void:
 		menu_popup.remove_child(list_submenu);
 		list_submenu.clear();
 		list_submenu.queue_free();
-	
+
 	# Create new:
 	list_submenu = PopupMenu.new();
 	list_submenu.name = "list_submenu";
 	list_submenu.connect("index_pressed", self, "_on_list_submenu_index_pressed");
-	
+
 	# Add items:
-	var array: Array = ["Basic", "IPhone", "Ipad", "Android", "Most Used", "Large", "Custom"];
+	var array: Array = ["Basic", "iPhone", "iPad", "Android", "Most Used", "Large", "Custom"];
 	for i in range(array.size()):
 		list_submenu.add_radio_check_item(array[i] + " List", i);
-	
+
 	# Check one:
 	update_radio_group_check_state(list_submenu, list_idx);
-	
+
 	# Attach submenu:
 	menu_popup.add_child(list_submenu);
 	menu_popup.add_submenu_item("Resolution List", "list_submenu");
@@ -206,7 +206,7 @@ func load_list_submenu()-> void:
 func update_radio_group_check_state(menu: PopupMenu, idx: int)-> void:
 	if not menu:
 		return;
-	
+
 	var item_count: int = menu.get_item_count();
 	for i in range(item_count):
 		if i == idx:
@@ -221,24 +221,24 @@ func update_radio_group_check_state(menu: PopupMenu, idx: int)-> void:
 func _on_menu_popup_index_pressed(idx: int)-> void:
 	if not menu_popup:
 		return;
-	
+
 	var key := menu_popup.get_item_text(idx);
 	if key == "Set Base Resolution":
 		set_res_window.show();
 		set_res_window.popup_centered();
-	
+
 	elif key == "Add Custom Resolution":
 		custom_res_window.show();
 		custom_res_window.popup_centered();
-	
+
 	else:
 		var width: int = resolution_data[key]["width"];
 		var height: int = resolution_data[key]["height"];
-		
+
 		ProjectSettings.set_setting("display/window/size/test_width", width);
 		ProjectSettings.set_setting("display/window/size/test_height", height);
 		ProjectSettings.save();
-		
+
 		text = key;
 
 
@@ -277,10 +277,10 @@ func _on_list_submenu_index_pressed(idx: int)-> void:
 		current_list = LIST_PATH + "large.txt";
 	elif idx == 6:
 		current_list = LIST_PATH + "custom.txt";
-	
+
 	update_radio_group_check_state(list_submenu, idx);
 	list_idx = idx;
-	
+
 	# Reload:
 	load_main_menu();
 
