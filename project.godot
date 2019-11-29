@@ -25,6 +25,10 @@ window/size/width=800
 window/size/test_width="600"
 window/size/test_height="400"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "ResolutionManager" )
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"
